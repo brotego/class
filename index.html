@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positive Conversations on Loss</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: white;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+           
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            outline: black;
+            border: 1px solid black;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .topic-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .topic-button {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .topic-button:hover:not(:disabled) {
+            background-color: red;
+            transform: translateY(-2px);
+        }
+
+        .topic-button:disabled {
+            background-color: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .email-form {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .email-form.visible {
+            display: block;
+        }
+
+        .email-form h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .email-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .submit-button, .cancel-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-button {
+            background-color: black;
+            color: white;
+        }
+
+        .submit-button:hover {
+            background-color: red;
+        }
+
+        .cancel-button {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .cancel-button:hover {
+            background-color: darkred;
+        }
+
+        .success-message {
+            display: none;
+            padding: 20px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .success-message.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Positive Conversations on Loss</h1>
+        
+        <div id="successMessage" class="success-message">
+            Thank you for registering! A confirmation email will be sent shortly.
+        </div>
+
+        <div id="emailForm" class="email-form">
+            <h3>Sign up for: <span id="selectedTopicName"></span></h3>
+            <input type="email" id="emailInput" class="email-input" placeholder="Enter your email" required>
+            <div class="form-buttons">
+                <button class="submit-button" onclick="handleSubmit()">Register</button>
+                <button class="cancel-button" onclick="cancelSelection()">Cancel</button>
+            </div>
+        </div>
+
+        <div class="topic-list" id="topicList">
+            <!-- Topics will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Topic data
+        const topics = [
+            { id: 1, name: 'Death of someone', taken: false },
+            { id: 2, name: 'Loss of a friendship (falling out)', taken: true },
+            { id: 3, name: 'Loss of a relationship', taken: false },
+            { id: 4, name: 'Loss of a passion', taken: true },
+            { id: 5, name: 'Loss of an item (sentimental)', taken: false },
+            { id: 6, name: 'Loss of an item (practical)', taken: false },
+            { id: 7, name: 'Loss of a menial item', taken: false },
+            { id: 8, name: 'Loss of a comforting location', taken: true },
+            { id: 9, name: 'Loss of something that impacts livelihood', taken: false },
+            { id: 10, name: 'Loss of an ability', taken: false },
+            { id: 11, name: 'Loss of a job', taken: false },
+            { id: 12, name: 'Loss of a tradition', taken: false },
+            { id: 13, name: 'Loss of connection to culture', taken: false },
+            { id: 14, name: 'Loss of a community', taken: false }
+        ];
+
+        let selectedTopic = null;
+
+        // Initialize the page
+        function initializePage() {
+            const topicList = document.getElementById('topicList');
+            topics.forEach(topic => {
+                const button = document.createElement('button');
+                button.className = 'topic-button';
+                button.textContent = topic.name;
+                button.disabled = topic.taken;
+                if (!topic.taken) {
+                    button.onclick = () => selectTopic(topic);
+                }
+                topicList.appendChild(button);
+            });
+        }
+
+        // Handle topic selection
+        function selectTopic(topic) {
+            selectedTopic = topic;
+            document.getElementById('selectedTopicName').textContent = topic.name;
+            document.getElementById('emailForm').classList.add('visible');
+            document.getElementById('successMessage').classList.remove('visible');
+        }
+
+        // Cancel selection
+        function cancelSelection() {
+            selectedTopic = null;
+            document.getElementById('emailForm').classList.remove('visible');
+            document.getElementById('emailInput').value = '';
+        }
+
+        // Handle form submission
+        function handleSubmit() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !selectedTopic) return;
+
+            // Here you would typically make an API call to save the registration
+            // For now, we'll just show the success message
+            document.getElementById('successMessage').classList.add('visible');
+            document.getElementById('emailForm').classList.remove('visible');
+            
+            // Mark the topic as taken
+            const topicButton = document.querySelector(`button:contains('${selectedTopic.name}')`);
+            if (topicButton) {
+                topicButton.disabled = true;
+            }
+
+            // Reset form
+            document.getElementById('emailInput').value = '';
+            selectedTopic = null;
+        }
+
+        // Initialize the page when loaded
+        window.onload = initializePage;
+    </script>
+</body>
+</html>
